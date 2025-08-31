@@ -157,6 +157,10 @@
             color: #fff;
             font-weight: 500;
         }
+
+        .main-menu li.restricted {
+            display: none; /* Oculta los elementos del menú restringidos */
+        }
         
         .main-menu .has-submenu > a::after {
             content: '+';
@@ -252,12 +256,6 @@
             margin-bottom: 1rem;
         }
         
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
         .form-group input, .form-group select {
             width: calc(100% - 24px);
             padding: 12px;
@@ -299,6 +297,28 @@
         
         .data-table tr:nth-child(even) {
             background-color: #f8f9fa;
+        }
+
+        .report-section {
+            margin-top: 24px;
+            padding: 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+        }
+
+        /* Estilos para el gráfico */
+        #chart-container {
+            margin-top: 24px;
+            padding: 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+        #incidence-chart {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin: auto;
         }
 
         /* Responsive Design */
@@ -375,15 +395,15 @@
                             Gestión de Información
                         </a>
                         <ul class="submenu">
-                            <li><a href="#" data-target="gestion-productores">Productores</a></li>
-                            <li><a href="#" data-target="gestion-predios">Predios</a></li>
-                            <li><a href="#" data-target="gestion-tecnicos">Técnicos</a></li>
+                            <li id="menu-productores"><a href="#" data-target="gestion-productores">Productores</a></li>
+                            <li id="menu-predios"><a href="#" data-target="gestion-predios">Predios</a></li>
+                            <li id="menu-tecnicos"><a href="#" data-target="gestion-tecnicos">Técnicos</a></li>
                         </ul>
                     </li>
-                    <li><a href="#" data-target="registro-inspecciones">Registro de Inspecciones</a></li>
-                    <li><a href="#" data-target="seguimiento">Seguimiento de Inspecciones</a></li>
-                    <li><a href="#" data-target="reportes">Reportes e Informes</a></li>
-                    <li><a href="#" data-target="historial">Consulta de Historial</a></li>
+                    <li id="menu-inspecciones"><a href="#" data-target="registro-inspecciones">Registro de Inspecciones</a></li>
+                    <li id="menu-seguimiento"><a href="#" data-target="seguimiento">Seguimiento de Inspecciones</a></li>
+                    <li id="menu-reportes"><a href="#" data-target="reportes">Reportes e Informes</a></li>
+                    <li id="menu-historial"><a href="#" data-target="historial">Consulta de Historial</a></li>
                 </ul>
             </nav>
             <div class="footer">
@@ -446,14 +466,8 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>101010</td>
-                                <td>Juan Pérez</td>
-                                <td>3101234567</td>
-                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
-                            </tr>
-                            <!-- Aquí se cargarían más productores dinámicamente -->
+                        <tbody id="productores-list">
+                            <!-- Los datos se cargarán aquí -->
                         </tbody>
                     </table>
                 </div>
@@ -479,7 +493,7 @@
                         <div class="form-group">
                             <label for="predio-producer">Productor:</label>
                             <select id="predio-producer">
-                                <option value="1">Juan Pérez</option>
+                                <option value="">Seleccione un productor</option>
                                 <!-- Aquí se cargarían los productores del sistema -->
                             </select>
                         </div>
@@ -494,17 +508,12 @@
                                 <th>Nombre</th>
                                 <th>Ubicación</th>
                                 <th>Extensión (ha)</th>
+                                <th>Productor</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>Finca El Roble</td>
-                                <td>Vereda La Palma</td>
-                                <td>50</td>
-                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
-                            </tr>
-                            <!-- Aquí se cargarían más predios dinámicamente -->
+                        <tbody id="predios-list">
+                            <!-- Los datos se cargarán aquí -->
                         </tbody>
                     </table>
                 </div>
@@ -529,7 +538,7 @@
                         </div>
                         <div class="form-group">
                             <label for="tecnico-email">Correo:</label>
-                            <input type="email" id="tecnico-email">
+                            <input type="email" id="tecnico-email" required>
                         </div>
                         <button type="submit" class="btn-primary">Guardar Técnico</button>
                     </form>
@@ -545,14 +554,8 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>T-001</td>
-                                <td>María Rodríguez</td>
-                                <td>TP-2023-01</td>
-                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
-                            </tr>
-                            <!-- Aquí se cargarían más técnicos dinámicamente -->
+                        <tbody id="tecnicos-list">
+                            <!-- Los datos se cargarán aquí -->
                         </tbody>
                     </table>
                 </div>
@@ -562,12 +565,11 @@
                     <p>Formulario para el registro de una nueva inspección, incluyendo el conteo de plantas y plagas.</p>
                     <hr>
                     <form id="inspeccion-form">
+                        <h2>Nueva Inspección</h2>
                         <div class="form-group">
                             <label for="inspeccion-predio">Predio:</label>
                             <select id="inspeccion-predio" required>
                                 <option value="">Seleccione un predio</option>
-                                <option value="1">Finca El Roble</option>
-                                <!-- Aquí se cargarían los predios del sistema -->
                             </select>
                         </div>
                         <div class="form-group">
@@ -578,9 +580,6 @@
                             <label for="inspeccion-cultivo">Cultivo:</label>
                             <input type="text" id="inspeccion-cultivo" placeholder="Ej: Aguacate Hass">
                         </div>
-                        <hr>
-                        <h2>Datos de Plagas</h2>
-                        <p>Ingrese los conteos para las plagas encontradas.</p>
                         <div class="form-group">
                             <label for="plantas-totales">Plantas Totales:</label>
                             <input type="number" id="plantas-totales" required>
@@ -599,17 +598,53 @@
 
                 <div id="seguimiento" class="content-section">
                     <h1>Seguimiento de Inspecciones</h1>
-                    <p>Permite el monitoreo histórico de los predios y el cálculo automático del nivel de incidencia de plagas.</p>
+                    <p>Seleccione un predio para ver el historial de incidencia de plagas y generar un reporte.</p>
                     <hr>
-                    <p>Este módulo mostraría un gráfico o una tabla del historial de inspecciones por predio, permitiendo al usuario visualizar la evolución del nivel de incidencia de plagas a lo largo del tiempo. El cálculo de la incidencia se realizaría en el backend.</p>
-                    <img src="https://placehold.co/800x400/2c5234/ffffff?text=Gráfico+de+Incidencia+de+Plagas" alt="Gráfico de seguimiento de plagas" style="border-radius: 8px;">
+                    <div class="form-group">
+                        <label for="seguimiento-predio">Seleccionar Predio:</label>
+                        <select id="seguimiento-predio">
+                            <option value="">Seleccione un predio</option>
+                        </select>
+                    </div>
+                    <div id="seguimiento-content" style="display:none;">
+                        <div id="chart-container">
+                            <h2>Evolución de la Incidencia de Plagas</h2>
+                            <canvas id="incidence-chart"></canvas>
+                        </div>
+                        <h2 style="margin-top: 24px;">Historial de Incidencia de Plagas</h2>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Cultivo</th>
+                                    <th>Plantas Totales</th>
+                                    <th>Plantas Afectadas</th>
+                                    <th>Incidencia (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="seguimiento-list">
+                                <!-- Datos de seguimiento se cargarán aquí -->
+                            </tbody>
+                        </table>
+                        
+                        <div style="margin-top: 24px;">
+                            <button id="generate-report-btn" class="btn-primary">Generar Reporte Detallado</button>
+                        </div>
+                    </div>
+                    <div id="report-modal" style="display:none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+                        <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px;">
+                            <span id="close-report-modal" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                            <h2>Reporte de Inspecciones</h2>
+                            <div id="report-content"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="reportes" class="content-section">
                     <h1>Reportes e Informes</h1>
                     <p>Módulo para la generación de informes detallados y automatizados.</p>
                     <hr>
-                    <p>Aquí se podría seleccionar un predio y un rango de fechas para generar un informe detallado en formato PDF o de hoja de cálculo.</p>
+                    <p>Aquí se podría seleccionar un predio y un rango de fechas para generar un reporte detallado en formato PDF o de hoja de cálculo.</p>
                     <button class="btn-primary">Generar Reporte</button>
                 </div>
 
@@ -617,7 +652,18 @@
                     <h1>Consulta de Historial</h1>
                     <p>Acceso al historial de inspecciones por predio para consulta.</p>
                     <hr>
-                    <p>Este apartado permitiría al usuario buscar por predio, técnico o fecha y ver un listado de todas las inspecciones realizadas, con la opción de ver los detalles de cada una.</p>
+                    <div class="form-group">
+                        <label for="filter-predio">Filtrar por Predio:</label>
+                        <select id="filter-predio">
+                            <option value="">Todos los predios</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-tecnico">Filtrar por Técnico:</label>
+                        <select id="filter-tecnico">
+                            <option value="">Todos los técnicos</option>
+                        </select>
+                    </div>
                     <table class="data-table">
                         <thead>
                             <tr>
@@ -627,14 +673,8 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>15/10/2023</td>
-                                <td>Finca El Roble</td>
-                                <td>María Rodríguez</td>
-                                <td><a href="#">Ver Detalles</a></td>
-                            </tr>
-                            <!-- Aquí se cargarían las inspecciones del historial -->
+                        <tbody id="historial-list">
+                            <!-- Los datos se cargarán aquí -->
                         </tbody>
                     </table>
                 </div>
@@ -644,21 +684,35 @@
 
     <script>
         $(document).ready(function() {
+            // Datos de usuarios y permisos
             const users = {
                 "admin@ica.com": { password: "adminpassword", role: "administrador" },
                 "tecnico@ica.com": { password: "tecnicopassword", role: "tecnico" }
             };
 
-            // Mostrar u ocultar formularios de autenticación
-            $('#show-register').on('click', function() {
-                $('#login-form').parent().hide();
-                $('#register-card').show();
-            });
+            // Simulación de datos de la "base de datos"
+            const db = {
+                productores: [
+                    { id: "101010", nombre: "Juan Pérez", telefono: "3101234567", correo: "juan.perez@email.com" },
+                    { id: "202020", nombre: "Ana Gómez", telefono: "3209876543", correo: "ana.gomez@email.com" }
+                ],
+                predios: [
+                    { nombre: "Finca El Roble", ubicacion: "Vereda La Palma", extension: 50, productor: "Juan Pérez" },
+                    { nombre: "Hacienda Las Rosas", ubicacion: "Vereda El Jardín", extension: 120, productor: "Ana Gómez" }
+                ],
+                tecnicos: [
+                    { id: "T-001", nombre: "María Rodríguez", tarjeta: "TP-2023-01", telefono: "3001112233", correo: "maria.rodriguez@ica.gov.co" },
+                    { id: "T-002", nombre: "Luis Fernández", tarjeta: "TP-2023-02", telefono: "3004445566", correo: "luis.fernandez@ica.gov.co" }
+                ],
+                inspecciones: [
+                    { predio: "Finca El Roble", fecha: "2023-10-15", tecnico: "María Rodríguez", cultivo: "Aguacate Hass", plantas_totales: 500, plantas_afectadas: 25, plaga: "Ácaro de la yema" },
+                    { predio: "Hacienda Las Rosas", fecha: "2023-10-16", tecnico: "Luis Fernández", cultivo: "Naranjas Valencia", plantas_totales: 1200, plantas_afectadas: 60, plaga: "Mosca de la fruta" },
+                    { predio: "Finca El Roble", fecha: "2023-11-20", tecnico: "María Rodríguez", cultivo: "Aguacate Hass", plantas_totales: 550, plantas_afectadas: 40, plaga: "Ácaro de la yema" },
+                    { predio: "Finca El Roble", fecha: "2024-01-25", tecnico: "María Rodríguez", cultivo: "Aguacate Hass", plantas_totales: 600, plantas_afectadas: 30, plaga: "Ácaro de la yema" }
+                ]
+            };
 
-            $('#show-login').on('click', function() {
-                $('#register-card').hide();
-                $('#login-form').parent().show();
-            });
+            let currentUserRole = ''; // Variable para guardar el rol del usuario
 
             // Lógica de inicio de sesión
             $('#login-form').on('submit', function(e) {
@@ -668,10 +722,14 @@
                 const user = users[email];
 
                 if (user && user.password === password) {
+                    currentUserRole = user.role;
                     $('#auth-container').hide();
                     $('#app-layout').css('display', 'flex');
-                    $('#user-display').text(`Usuario: ${user.role}`);
-                    // Opcionalmente, puedes cargar datos específicos del usuario aquí
+                    $('#user-display').text(`Usuario: ${currentUserRole}`);
+                    // Ocultar/mostrar elementos del menú según el rol
+                    updateMenuVisibility(currentUserRole);
+                    // Cargar datos en las tablas y los select
+                    loadData();
                 } else {
                     $('#login-error-message').text('Credenciales incorrectas.').show();
                 }
@@ -687,14 +745,15 @@
                 if (email in users) {
                     $('#register-error-message').text('El correo ya está registrado.').show();
                 } else {
-                    // Evitar el uso de alert para una mejor experiencia de usuario en la plataforma
-                    // Aquí se debería enviar la información a una base de datos real
-                    alert('Registro exitoso. Ahora puedes iniciar sesión.');
-                    $('#show-login').trigger('click');
-                    $('#register-error-message').hide();
+                    users[email] = { password, role };
+                    $('#register-error-message').text('Registro exitoso. Ahora puedes iniciar sesión.').show().css('color', 'green');
+                    setTimeout(() => {
+                        $('#show-login').trigger('click');
+                        $('#register-error-message').hide();
+                    }, 2000);
                 }
             });
-            
+
             // Lógica de cierre de sesión
             $('#logout-button').on('click', function() {
                 $('#app-layout').hide();
@@ -704,6 +763,218 @@
                 $('.content-section').removeClass('active');
                 $('#bienvenido').addClass('active');
                 $('#page-title').text('Bienvenido');
+            });
+
+            // Función para actualizar la visibilidad del menú según el rol
+            function updateMenuVisibility(role) {
+                if (role === 'administrador') {
+                    $('#menu-productores, #menu-predios, #menu-tecnicos').show();
+                } else if (role === 'tecnico') {
+                    $('#menu-productores, #menu-predios, #menu-tecnicos').hide();
+                }
+            }
+
+            // Función principal para cargar y renderizar los datos
+            function loadData() {
+                renderProductores();
+                renderPredios();
+                renderTecnicos();
+                renderInspeccionSelects();
+                renderHistorial();
+                renderSeguimientoSelects();
+            }
+
+            // Funciones de renderizado específicas para cada sección
+            function renderProductores() {
+                $('#productores-list').empty();
+                if (currentUserRole === 'administrador') {
+                    db.productores.forEach(p => {
+                        const row = `
+                            <tr>
+                                <td>${p.id}</td>
+                                <td>${p.nombre}</td>
+                                <td>${p.telefono}</td>
+                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
+                            </tr>
+                        `;
+                        $('#productores-list').append(row);
+                    });
+                }
+            }
+
+            function renderPredios() {
+                $('#predios-list').empty();
+                if (currentUserRole === 'administrador') {
+                    db.predios.forEach(p => {
+                        const row = `
+                            <tr>
+                                <td>${p.nombre}</td>
+                                <td>${p.ubicacion}</td>
+                                <td>${p.extension}</td>
+                                <td>${p.productor}</td>
+                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
+                            </tr>
+                        `;
+                        $('#predios-list').append(row);
+                    });
+                }
+            }
+
+            function renderTecnicos() {
+                $('#tecnicos-list').empty();
+                if (currentUserRole === 'administrador') {
+                    db.tecnicos.forEach(t => {
+                        const row = `
+                            <tr>
+                                <td>${t.id}</td>
+                                <td>${t.nombre}</td>
+                                <td>${t.tarjeta}</td>
+                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
+                            </tr>
+                        `;
+                        $('#tecnicos-list').append(row);
+                    });
+                }
+            }
+
+            function renderInspeccionSelects() {
+                // Rellena el select de productores en el form de predios
+                $('#predio-producer').empty().append('<option value="">Seleccione un productor</option>');
+                db.productores.forEach(p => {
+                    $('#predio-producer').append(`<option value="${p.nombre}">${p.nombre}</option>`);
+                });
+
+                // Rellena el select de predios en el form de inspecciones
+                $('#inspeccion-predio').empty().append('<option value="">Seleccione un predio</option>');
+                db.predios.forEach(p => {
+                    $('#inspeccion-predio').append(`<option value="${p.nombre}">${p.nombre}</option>`);
+                });
+            }
+
+            function renderSeguimientoSelects() {
+                // Rellena el select de predios en la sección de seguimiento
+                $('#seguimiento-predio').empty().append('<option value="">Seleccione un predio</option>');
+                db.predios.forEach(p => {
+                    $('#seguimiento-predio').append(`<option value="${p.nombre}">${p.nombre}</option>`);
+                });
+            }
+            
+            function renderHistorial(filterPredio = '', filterTecnico = '') {
+                $('#historial-list').empty();
+                let filteredInspecciones = db.inspecciones;
+
+                if (filterPredio) {
+                    filteredInspecciones = filteredInspecciones.filter(i => i.predio === filterPredio);
+                }
+
+                if (filterTecnico) {
+                    filteredInspecciones = filteredInspecciones.filter(i => i.tecnico === filterTecnico);
+                }
+
+                filteredInspecciones.forEach(i => {
+                    const row = `
+                        <tr>
+                            <td>${i.fecha}</td>
+                            <td>${i.predio}</td>
+                            <td>${i.tecnico}</td>
+                            <td><a href="#" class="view-details" data-predio="${i.predio}" data-fecha="${i.fecha}" data-tecnico="${i.tecnico}">Ver Detalles</a></td>
+                        </tr>
+                    `;
+                    $('#historial-list').append(row);
+                });
+
+                // Rellena los filtros la primera vez
+                if ($('#filter-predio option').length <= 1) {
+                    const predios = [...new Set(db.inspecciones.map(i => i.predio))];
+                    predios.forEach(p => {
+                        $('#filter-predio').append(`<option value="${p}">${p}</option>`);
+                    });
+                    const tecnicos = [...new Set(db.inspecciones.map(i => i.tecnico))];
+                    tecnicos.forEach(t => {
+                        $('#filter-tecnico').append(`<option value="${t}">${t}</option>`);
+                    });
+                }
+            }
+
+            // Manejar el envío del formulario de Productores
+            $('#producer-form').on('submit', function(e) {
+                e.preventDefault();
+                const newProducer = {
+                    id: $('#producer-id').val(),
+                    nombre: $('#producer-name').val(),
+                    telefono: $('#producer-phone').val(),
+                    correo: $('#producer-email').val()
+                };
+                db.productores.push(newProducer);
+                $('#producer-form').append('<p style="color:green;">Productor guardado exitosamente.</p>');
+                setTimeout(() => $('#producer-form p').remove(), 2000);
+                $('#producer-form')[0].reset();
+                loadData();
+            });
+
+            // Manejar el envío del formulario de Predios
+            $('#predio-form').on('submit', function(e) {
+                e.preventDefault();
+                const newPredio = {
+                    nombre: $('#predio-name').val(),
+                    ubicacion: $('#predio-location').val(),
+                    extension: $('#predio-extension').val(),
+                    productor: $('#predio-producer').val()
+                };
+                db.predios.push(newPredio);
+                $('#predio-form').append('<p style="color:green;">Predio guardado exitosamente.</p>');
+                setTimeout(() => $('#predio-form p').remove(), 2000);
+                $('#predio-form')[0].reset();
+                loadData();
+            });
+
+            // Manejar el envío del formulario de Técnicos
+            $('#tecnico-form').on('submit', function(e) {
+                e.preventDefault();
+                const tecnicoEmail = $('#tecnico-email').val();
+                
+                // 1. Crear el nuevo usuario técnico en la simulación de la base de datos de usuarios
+                if (users[tecnicoEmail]) {
+                    $('#tecnico-form').append('<p style="color:red;">El correo electrónico ya está en uso.</p>');
+                    setTimeout(() => $('#tecnico-form p').remove(), 2000);
+                    return;
+                }
+                
+                users[tecnicoEmail] = { password: 'password123', role: 'tecnico' };
+                
+                // 2. Guardar los datos del técnico en la simulación de la base de datos de técnicos
+                const newTecnico = {
+                    id: $('#tecnico-prof-id').val(),
+                    nombre: $('#tecnico-name').val(),
+                    tarjeta: $('#tecnico-prof-id').val(),
+                    telefono: $('#tecnico-phone').val(),
+                    correo: tecnicoEmail
+                };
+                db.tecnicos.push(newTecnico);
+
+                $('#tecnico-form').append('<p style="color:green;">Técnico guardado y cuenta de usuario creada (Contraseña: password123).</p>');
+                setTimeout(() => $('#tecnico-form p').remove(), 3000);
+                $('#tecnico-form')[0].reset();
+                loadData();
+            });
+            
+            // Manejar el envío del formulario de Inspecciones
+            $('#inspeccion-form').on('submit', function(e) {
+                e.preventDefault();
+                const newInspeccion = {
+                    predio: $('#inspeccion-predio').val(),
+                    fecha: $('#inspeccion-date').val(),
+                    cultivo: $('#inspeccion-cultivo').val(),
+                    plantas_totales: parseInt($('#plantas-totales').val()),
+                    plantas_afectadas: parseInt($('#plantas-afectadas').val()),
+                    plaga: $('#plaga-name').val(),
+                    tecnico: 'María Rodríguez' // Simulación de técnico logeado
+                };
+                db.inspecciones.push(newInspeccion);
+                $('#inspeccion-form').append('<p style="color:green;">Inspección registrada exitosamente.</p>');
+                setTimeout(() => $('#inspeccion-form p').remove(), 2000);
+                $('#inspeccion-form')[0].reset();
+                loadData();
             });
 
             // Manejar la navegación del menú
@@ -737,6 +1008,120 @@
             // Toggle para el menú en móviles
             $('.menu-toggle').on('click', function() {
                 $('.sidebar').toggleClass('active');
+            });
+
+            // Lógica para los filtros en el historial
+            $('#filter-predio, #filter-tecnico').on('change', function() {
+                const predio = $('#filter-predio').val();
+                const tecnico = $('#filter-tecnico').val();
+                renderHistorial(predio, tecnico);
+            });
+
+            // Lógica para el seguimiento de inspecciones
+            $('#seguimiento-predio').on('change', function() {
+                const predio = $(this).val();
+                if (predio) {
+                    $('#seguimiento-content').show();
+                    const filteredInspecciones = db.inspecciones.filter(i => i.predio === predio).sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+                    
+                    $('#seguimiento-list').empty();
+                    const chartData = [];
+                    filteredInspecciones.forEach(i => {
+                        const incidencia = ((i.plantas_afectadas / i.plantas_totales) * 100).toFixed(2);
+                        chartData.push({
+                            label: i.fecha,
+                            value: parseFloat(incidencia)
+                        });
+                        const row = `
+                            <tr>
+                                <td>${i.fecha}</td>
+                                <td>${i.cultivo}</td>
+                                <td>${i.plantas_totales}</td>
+                                <td>${i.plantas_afectadas}</td>
+                                <td>${incidencia}%</td>
+                            </tr>
+                        `;
+                        $('#seguimiento-list').append(row);
+                    });
+                    
+                    drawChart(chartData);
+                } else {
+                    $('#seguimiento-content').hide();
+                }
+            });
+            
+            // Función para dibujar el gráfico de barras
+            function drawChart(data) {
+                const canvas = $('#incidence-chart')[0];
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const margin = 20;
+                const chartHeight = canvas.height - margin * 2;
+                const chartWidth = canvas.width - margin * 2;
+                const barWidth = chartWidth / data.length;
+                const maxIncidencia = 100;
+
+                ctx.fillStyle = '#2c5234';
+                data.forEach((d, i) => {
+                    const barHeight = (d.value / maxIncidencia) * chartHeight;
+                    const x = margin + i * barWidth;
+                    const y = chartHeight + margin - barHeight;
+                    ctx.fillRect(x, y, barWidth - 10, barHeight);
+                    
+                    // Etiquetas
+                    ctx.fillStyle = '#2d3748';
+                    ctx.font = '12px Inter';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${d.value}%`, x + barWidth / 2 - 5, y - 5);
+                    ctx.fillText(d.label, x + barWidth / 2 - 5, chartHeight + margin + 15);
+                });
+            }
+
+            // Lógica para generar el reporte
+            $('#generate-report-btn').on('click', function() {
+                const predio = $('#seguimiento-predio').val();
+                if (!predio) {
+                    return;
+                }
+                const filteredInspecciones = db.inspecciones.filter(i => i.predio === predio);
+
+                if (filteredInspecciones.length === 0) {
+                    $('#report-content').text('No hay datos para generar el reporte de este predio.');
+                    $('#report-modal').show();
+                    return;
+                }
+
+                const totalInspecciones = filteredInspecciones.length;
+                const totalPlantas = filteredInspecciones.reduce((sum, i) => sum + i.plantas_totales, 0);
+                const totalAfectadas = filteredInspecciones.reduce((sum, i) => sum + i.plantas_afectadas, 0);
+                const promedioIncidencia = ((totalAfectadas / totalPlantas) * 100).toFixed(2);
+                
+                let reportText = `
+                    <h3>Reporte Detallado del Predio: ${predio}</h3>
+                    <p><strong>Número de Inspecciones:</strong> ${totalInspecciones}</p>
+                    <p><strong>Total de Plantas Inspeccionadas:</strong> ${totalPlantas}</p>
+                    <p><strong>Total de Plantas Afectadas:</strong> ${totalAfectadas}</p>
+                    <p><strong>Promedio de Incidencia de Plagas:</strong> ${promedioIncidencia}%</p>
+                    <br>
+                    <h4>Detalle por Inspección:</h4>
+                    <ul>
+                `;
+
+                filteredInspecciones.forEach(i => {
+                    const incidencia = ((i.plantas_afectadas / i.plantas_totales) * 100).toFixed(2);
+                    reportText += `<li><strong>Fecha:</strong> ${i.fecha} | <strong>Cultivo:</strong> ${i.cultivo} | <strong>Plaga:</strong> ${i.plaga} | <strong>Incidencia:</strong> ${incidencia}%</li>`;
+                });
+
+                reportText += '</ul>';
+                
+                $('#report-content').html(reportText);
+                $('#report-modal').show();
+            });
+
+            // Lógica para cerrar el modal de reporte
+            $('#close-report-modal').on('click', function() {
+                $('#report-modal').hide();
             });
         });
     </script>
