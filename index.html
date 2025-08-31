@@ -247,6 +247,59 @@
         p {
             margin-bottom: 1rem;
         }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: calc(100% - 24px);
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            box-sizing: border-box;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            background-color: #22432a;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+        }
+        
+        .data-table th, .data-table td {
+            border: 1px solid var(--light-gray);
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .data-table th {
+            background-color: #f0f4f8;
+            font-weight: 600;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -360,36 +413,230 @@
                 <div id="gestion-productores" class="content-section">
                     <h1>Gestión de Productores</h1>
                     <p>Módulo para la gestión (CRUD) de la información de los productores.</p>
+                    <hr>
+                    <form id="producer-form">
+                        <h2>Crear/Editar Productor</h2>
+                        <div class="form-group">
+                            <label for="producer-name">Nombre Completo:</label>
+                            <input type="text" id="producer-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="producer-id">Cédula/ID:</label>
+                            <input type="text" id="producer-id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="producer-phone">Teléfono:</label>
+                            <input type="tel" id="producer-phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="producer-email">Correo:</label>
+                            <input type="email" id="producer-email">
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar Productor</button>
+                    </form>
+                    
+                    <hr>
+                    <h2>Listado de Productores</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>101010</td>
+                                <td>Juan Pérez</td>
+                                <td>3101234567</td>
+                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
+                            </tr>
+                            <!-- Aquí se cargarían más productores dinámicamente -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <div id="gestion-predios" class="content-section">
                     <h1>Gestión de Predios</h1>
                     <p>Módulo para la gestión (CRUD) de la información de los predios.</p>
+                    <hr>
+                    <form id="predio-form">
+                        <h2>Crear/Editar Predio</h2>
+                        <div class="form-group">
+                            <label for="predio-name">Nombre del Predio:</label>
+                            <input type="text" id="predio-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="predio-location">Ubicación:</label>
+                            <input type="text" id="predio-location" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="predio-extension">Extensión (ha):</label>
+                            <input type="number" id="predio-extension" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="predio-producer">Productor:</label>
+                            <select id="predio-producer">
+                                <option value="1">Juan Pérez</option>
+                                <!-- Aquí se cargarían los productores del sistema -->
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar Predio</button>
+                    </form>
+                    
+                    <hr>
+                    <h2>Listado de Predios</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Ubicación</th>
+                                <th>Extensión (ha)</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Finca El Roble</td>
+                                <td>Vereda La Palma</td>
+                                <td>50</td>
+                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
+                            </tr>
+                            <!-- Aquí se cargarían más predios dinámicamente -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <div id="gestion-tecnicos" class="content-section">
                     <h1>Gestión de Técnicos</h1>
                     <p>Módulo para la gestión (CRUD) de la información de los técnicos.</p>
+                    <hr>
+                    <form id="tecnico-form">
+                        <h2>Crear/Editar Técnico</h2>
+                        <div class="form-group">
+                            <label for="tecnico-name">Nombre Completo:</label>
+                            <input type="text" id="tecnico-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tecnico-prof-id">Tarjeta Profesional:</label>
+                            <input type="text" id="tecnico-prof-id" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tecnico-phone">Teléfono:</label>
+                            <input type="tel" id="tecnico-phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="tecnico-email">Correo:</label>
+                            <input type="email" id="tecnico-email">
+                        </div>
+                        <button type="submit" class="btn-primary">Guardar Técnico</button>
+                    </form>
+
+                    <hr>
+                    <h2>Listado de Técnicos</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Tarjeta Profesional</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>T-001</td>
+                                <td>María Rodríguez</td>
+                                <td>TP-2023-01</td>
+                                <td><a href="#">Editar</a> | <a href="#">Eliminar</a></td>
+                            </tr>
+                            <!-- Aquí se cargarían más técnicos dinámicamente -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <div id="registro-inspecciones" class="content-section">
                     <h1>Registro de Inspecciones</h1>
                     <p>Formulario para el registro de una nueva inspección, incluyendo el conteo de plantas y plagas.</p>
+                    <hr>
+                    <form id="inspeccion-form">
+                        <div class="form-group">
+                            <label for="inspeccion-predio">Predio:</label>
+                            <select id="inspeccion-predio" required>
+                                <option value="">Seleccione un predio</option>
+                                <option value="1">Finca El Roble</option>
+                                <!-- Aquí se cargarían los predios del sistema -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inspeccion-date">Fecha de Inspección:</label>
+                            <input type="date" id="inspeccion-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inspeccion-cultivo">Cultivo:</label>
+                            <input type="text" id="inspeccion-cultivo" placeholder="Ej: Aguacate Hass">
+                        </div>
+                        <hr>
+                        <h2>Datos de Plagas</h2>
+                        <p>Ingrese los conteos para las plagas encontradas.</p>
+                        <div class="form-group">
+                            <label for="plantas-totales">Plantas Totales:</label>
+                            <input type="number" id="plantas-totales" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="plantas-afectadas">Plantas Afectadas:</label>
+                            <input type="number" id="plantas-afectadas" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="plaga-name">Nombre de la Plaga:</label>
+                            <input type="text" id="plaga-name" placeholder="Ej: Ácaro de la yema">
+                        </div>
+                        <button type="submit" class="btn-primary">Registrar Inspección</button>
+                    </form>
                 </div>
 
                 <div id="seguimiento" class="content-section">
                     <h1>Seguimiento de Inspecciones</h1>
                     <p>Permite el monitoreo histórico de los predios y el cálculo automático del nivel de incidencia de plagas.</p>
+                    <hr>
+                    <p>Este módulo mostraría un gráfico o una tabla del historial de inspecciones por predio, permitiendo al usuario visualizar la evolución del nivel de incidencia de plagas a lo largo del tiempo. El cálculo de la incidencia se realizaría en el backend.</p>
+                    <img src="https://placehold.co/800x400/2c5234/ffffff?text=Gráfico+de+Incidencia+de+Plagas" alt="Gráfico de seguimiento de plagas" style="border-radius: 8px;">
                 </div>
 
                 <div id="reportes" class="content-section">
                     <h1>Reportes e Informes</h1>
                     <p>Módulo para la generación de informes detallados y automatizados.</p>
+                    <hr>
+                    <p>Aquí se podría seleccionar un predio y un rango de fechas para generar un informe detallado en formato PDF o de hoja de cálculo.</p>
+                    <button class="btn-primary">Generar Reporte</button>
                 </div>
 
                 <div id="historial" class="content-section">
                     <h1>Consulta de Historial</h1>
                     <p>Acceso al historial de inspecciones por predio para consulta.</p>
+                    <hr>
+                    <p>Este apartado permitiría al usuario buscar por predio, técnico o fecha y ver un listado de todas las inspecciones realizadas, con la opción de ver los detalles de cada una.</p>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Predio</th>
+                                <th>Técnico</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>15/10/2023</td>
+                                <td>Finca El Roble</td>
+                                <td>María Rodríguez</td>
+                                <td><a href="#">Ver Detalles</a></td>
+                            </tr>
+                            <!-- Aquí se cargarían las inspecciones del historial -->
+                        </tbody>
+                    </table>
                 </div>
             </main>
         </div>
@@ -440,7 +687,8 @@
                 if (email in users) {
                     $('#register-error-message').text('El correo ya está registrado.').show();
                 } else {
-                    users[email] = { password, role };
+                    // Evitar el uso de alert para una mejor experiencia de usuario en la plataforma
+                    // Aquí se debería enviar la información a una base de datos real
                     alert('Registro exitoso. Ahora puedes iniciar sesión.');
                     $('#show-login').trigger('click');
                     $('#register-error-message').hide();
