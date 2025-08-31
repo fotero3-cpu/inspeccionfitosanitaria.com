@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inspección Fitosanitaria</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #2c5234;
+            --secondary-color: #4CAF50;
+            --background-color: #f7fafc;
+            --text-color: #2d3748;
+            --light-gray: #e2e8f0;
+            --dark-gray: #a0aec0;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* --- Login/Registro --- */
+        #auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--background-color);
+        }
+
+        .auth-card {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .auth-card h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 24px;
+        }
+
+        .auth-card input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .auth-card button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background-color: var(--primary-color);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .auth-card button:hover {
+            background-color: #22432a;
+        }
+
+        .auth-card .switch-auth {
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            cursor: pointer;
+        }
+        
+        .auth-card .error-message {
+            color: red;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        /* --- Layout de la Aplicación --- */
+        .app-layout {
+            display: none;
+            width: 100%;
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: fixed;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .logo {
+            padding: 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .main-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .main-menu li {
+            position: relative;
+        }
+
+        .main-menu a {
+            display: block;
+            padding: 16px 24px;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: background-color 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .main-menu a:hover {
+            background-color: var(--light-gray);
+            color: var(--primary-color);
+        }
+
+        .main-menu a.active {
+            background-color: var(--primary-color);
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .main-menu .has-submenu > a::after {
+            content: '+';
+            font-size: 1.2rem;
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        
+        .main-menu .has-submenu.open > a::after {
+            transform: rotate(45deg);
+        }
+
+        .submenu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background-color: #f0f4f8;
+            display: none;
+            overflow: hidden;
+        }
+
+        .submenu a {
+            padding-left: 48px;
+            font-size: 0.9rem;
+        }
+        
+        .footer {
+            padding: 16px;
+            text-align: center;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 24px;
+            flex-grow: 1;
+            transition: margin-left 0.3s ease-in-out;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .logout-button {
+            padding: 8px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            background-color: #fff;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        
+        .logout-button:hover {
+            background-color: var(--light-gray);
+            color: var(--primary-color);
+        }
+        
+        .content-section {
+            display: none;
+            padding: 24px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+        
+        h1, h2 {
+            color: var(--primary-color);
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-250px);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .app-layout {
+                flex-direction: column;
+            }
+
+            .menu-toggle {
+                display: block;
+                font-size: 1.5rem;
+                cursor: pointer;
+                margin-right: 16px;
+                color: var(--text-color);
+            }
+            
+            header {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor de Autenticación (se muestra por defecto) -->
+    <div id="auth-container">
+        <div class="auth-card">
+            <h1>Iniciar Sesión</h1>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Correo Electrónico" required>
+                <input type="password" id="login-password" placeholder="Contraseña" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <p class="error-message" id="login-error-message">Credenciales incorrectas.</p>
+            <p class="switch-auth" id="show-register">¿No tienes una cuenta? Regístrate</p>
+        </div>
+
+        <div class="auth-card" id="register-card" style="display:none;">
+            <h1>Registrarse</h1>
+            <form id="register-form">
+                <input type="email" id="register-email" placeholder="Correo Electrónico" required>
+                <input type="password" id="register-password" placeholder="Contraseña" required>
+                <select id="register-role" style="width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid var(--light-gray); border-radius: var(--border-radius);">
+                    <option value="tecnico">Técnico</option>
+                    <option value="administrador">Administrador</option>
+                </select>
+                <button type="submit">Registrarme</button>
+            </form>
+            <p class="error-message" id="register-error-message">Error en el registro. Inténtalo de nuevo.</p>
+            <p class="switch-auth" id="show-login">¿Ya tienes una cuenta? Iniciar Sesión</p>
+        </div>
+    </div>
+    
+    <!-- Contenedor Principal de la Aplicación (se oculta por defecto) -->
+    <div class="app-layout" id="app-layout">
+        <!-- Barra Lateral (Sidebar) -->
+        <aside class="sidebar">
+            <div class="logo">ICA</div>
+            <nav>
+                <ul class="main-menu">
+                    <li class="has-submenu">
+                        <a href="#" data-target="gestion-informacion">
+                            Gestión de Información
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="#" data-target="gestion-productores">Productores</a></li>
+                            <li><a href="#" data-target="gestion-predios">Predios</a></li>
+                            <li><a href="#" data-target="gestion-tecnicos">Técnicos</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#" data-target="registro-inspecciones">Registro de Inspecciones</a></li>
+                    <li><a href="#" data-target="seguimiento">Seguimiento de Inspecciones</a></li>
+                    <li><a href="#" data-target="reportes">Reportes e Informes</a></li>
+                    <li><a href="#" data-target="historial">Consulta de Historial</a></li>
+                </ul>
+            </nav>
+            <div class="footer">
+                <span id="user-display"></span>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <div class="main-content">
+            <header>
+                <div class="menu-toggle">☰</div>
+                <div class="header-title" id="page-title">Bienvenido</div>
+                <button class="logout-button" id="logout-button">Cerrar Sesión</button>
+            </header>
+            
+            <main>
+                <div id="bienvenido" class="content-section active">
+                    <h1>Bienvenido al Sistema de Inspección Fitosanitaria</h1>
+                    <p>Este sistema permite el registro, la gestión y el seguimiento de las inspecciones fitosanitarias de predios de producción de vegetales, mejorando la eficiencia y la trazabilidad del proceso para el ICA y los técnicos.</p>
+                </div>
+
+                <div id="gestion-informacion" class="content-section">
+                    <h1>Gestión de Información</h1>
+                    <p>Aquí puede gestionar la información de productores, predios y técnicos.</p>
+                </div>
+
+                <div id="gestion-productores" class="content-section">
+                    <h1>Gestión de Productores</h1>
+                    <p>Módulo para la gestión (CRUD) de la información de los productores.</p>
+                </div>
+
+                <div id="gestion-predios" class="content-section">
+                    <h1>Gestión de Predios</h1>
+                    <p>Módulo para la gestión (CRUD) de la información de los predios.</p>
+                </div>
+
+                <div id="gestion-tecnicos" class="content-section">
+                    <h1>Gestión de Técnicos</h1>
+                    <p>Módulo para la gestión (CRUD) de la información de los técnicos.</p>
+                </div>
+
+                <div id="registro-inspecciones" class="content-section">
+                    <h1>Registro de Inspecciones</h1>
+                    <p>Formulario para el registro de una nueva inspección, incluyendo el conteo de plantas y plagas.</p>
+                </div>
+
+                <div id="seguimiento" class="content-section">
+                    <h1>Seguimiento de Inspecciones</h1>
+                    <p>Permite el monitoreo histórico de los predios y el cálculo automático del nivel de incidencia de plagas.</p>
+                </div>
+
+                <div id="reportes" class="content-section">
+                    <h1>Reportes e Informes</h1>
+                    <p>Módulo para la generación de informes detallados y automatizados.</p>
+                </div>
+
+                <div id="historial" class="content-section">
+                    <h1>Consulta de Historial</h1>
+                    <p>Acceso al historial de inspecciones por predio para consulta.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const users = {
+                "admin@ica.com": { password: "adminpassword", role: "administrador" },
+                "tecnico@ica.com": { password: "tecnicopassword", role: "tecnico" }
+            };
+
+            // Mostrar u ocultar formularios de autenticación
+            $('#show-register').on('click', function() {
+                $('#login-form').parent().hide();
+                $('#register-card').show();
+            });
+
+            $('#show-login').on('click', function() {
+                $('#register-card').hide();
+                $('#login-form').parent().show();
+            });
+
+            // Lógica de inicio de sesión
+            $('#login-form').on('submit', function(e) {
+                e.preventDefault();
+                const email = $('#login-email').val();
+                const password = $('#login-password').val();
+                const user = users[email];
+
+                if (user && user.password === password) {
+                    $('#auth-container').hide();
+                    $('#app-layout').css('display', 'flex');
+                    $('#user-display').text(`Usuario: ${user.role}`);
+                    // Opcionalmente, puedes cargar datos específicos del usuario aquí
+                } else {
+                    $('#login-error-message').text('Credenciales incorrectas.').show();
+                }
+            });
+
+            // Lógica de registro (simulado)
+            $('#register-form').on('submit', function(e) {
+                e.preventDefault();
+                const email = $('#register-email').val();
+                const password = $('#register-password').val();
+                const role = $('#register-role').val();
+
+                if (email in users) {
+                    $('#register-error-message').text('El correo ya está registrado.').show();
+                } else {
+                    users[email] = { password, role };
+                    alert('Registro exitoso. Ahora puedes iniciar sesión.');
+                    $('#show-login').trigger('click');
+                    $('#register-error-message').hide();
+                }
+            });
+            
+            // Lógica de cierre de sesión
+            $('#logout-button').on('click', function() {
+                $('#app-layout').hide();
+                $('#auth-container').show();
+                $('#login-form')[0].reset();
+                $('#register-form')[0].reset();
+                $('.content-section').removeClass('active');
+                $('#bienvenido').addClass('active');
+                $('#page-title').text('Bienvenido');
+            });
+
+            // Manejar la navegación del menú
+            $('.main-menu > li > a, .submenu a').on('click', function(e) {
+                const target = $(this).data('target');
+                if (target) {
+                    e.preventDefault();
+                    
+                    $('.main-menu a').removeClass('active');
+                    $(this).addClass('active');
+                    
+                    $('.content-section').removeClass('active');
+                    $('#' + target).addClass('active');
+                    
+                    $('#page-title').text($(this).text().trim());
+
+                    if ($(window).width() <= 768) {
+                        $('.sidebar').toggleClass('active');
+                    }
+                }
+            });
+
+            // Toggle para los submenús
+            $('.has-submenu > a').on('click', function(e) {
+                e.preventDefault();
+                const parentLi = $(this).parent('li');
+                parentLi.toggleClass('open');
+                parentLi.find('.submenu').slideToggle(300);
+            });
+
+            // Toggle para el menú en móviles
+            $('.menu-toggle').on('click', function() {
+                $('.sidebar').toggleClass('active');
+            });
+        });
+    </script>
+</body>
+</html>
